@@ -21,6 +21,7 @@ abstract class Code implements Comparable {
         description length: 4000
         enabled defaultValue: 1
         // The generated DDL will have a default value of �1�, e.g., enabled number(1,0) default 1 not null. Note: Grails maps Boolean into number(1,0) in Oracle.
+        version false
     }
 
     static constraints = {

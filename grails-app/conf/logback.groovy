@@ -21,6 +21,7 @@ appender('STDOUT', ConsoleAppender) {
                         '%m%n%wex' // Message
     }
 }
+logger 'wts.server.BootStrap', DEBUG
 
 logger 'org.springframework.security', DEBUG
 logger 'grails.plugin.springsecurity', TRACE

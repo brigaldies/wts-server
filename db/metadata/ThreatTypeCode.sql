@@ -1,0 +1,2 @@
+insert into THREAT_TYPE_CODE(CODE, LABEL, DESCRIPTION, DATE_CREATED) (select 'STORM_HAIL', 'Hail Storm', 'Hail Storm', sysdate from dual);
+insert into THREAT_TYPE_CODE(CODE, LABEL, DESCRIPTION, DATE_CREATED) (select 'FLOOD', 'Flood', 'Flood', sysdate from dual);

@@ -11,7 +11,7 @@ package com.infiniteintelligence.wts.scripts
 import grails.util.Environment
 import grails.util.Holders
 import groovy.sql.Sql
-import org.apache.commons.logging.LogFactory
+import org.slf4j.LoggerFactory
 
 import com.infiniteintelligence.wts.services.security.SecurityService
 import com.infiniteintelligence.wts.domain.security.User
@@ -27,7 +27,7 @@ main()
 def main() {
 
     // Get a logger, and make it a property of the script's class to make it available to all methods in the script.
-    this.metaClass.log = LogFactory.getLog(getClass())
+    this.metaClass.log = LoggerFactory.getLogger(getClass())
     log.info '---------- BuildDb.groovy: BEGIN -----------'
     log.info "Running script class '${this.class.name}' in package '${this.class?.package?.name}'"
 
@@ -61,6 +61,8 @@ def main() {
             // Meta data (e.g., code tables)
             // Listed by alphabetical order, unless dependencies between the scripts require a different order
             // (Please document any dependency)
+            'ThreatSeverityCode',
+            'ThreatTypeCode'
     ]
 
     sql.withTransaction {
@@ -96,9 +98,9 @@ def main() {
 
 //        createForeignKeyIndexes(dataSourceConfig.username)
 
-        createRolesAndSystemAccount()
-
-        createTestUsers()
+        // TODO: Does not encode the passwords when run from BuildDb!?????
+//        createRolesAndSystemAccount()
+//        createTestUsers()
 
         // Load the metadata from SQL scripts:
         metadata.each { table ->

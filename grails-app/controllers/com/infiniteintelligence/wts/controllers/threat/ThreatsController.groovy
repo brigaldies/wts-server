@@ -1,17 +1,23 @@
 package com.infiniteintelligence.wts.controllers.threat
 
 import com.infiniteintelligence.wts.domain.threat.Threat
+import grails.plugin.springsecurity.annotation.Secured
+import groovy.util.logging.Slf4j
 
 import static org.springframework.http.HttpStatus.*
 import grails.transaction.Transactional
 
+@Slf4j
 @Transactional(readOnly = true)
-class ThreatController {
+@Secured('ROLE_USER')
+class ThreatsController {
 
-    static responseFormats = ['json', 'xml']
-    static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static responseFormats = ['json']
+    // static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+    @Secured('ROLE_USER')
     def index(Integer max) {
+        log.debug "index: max=${max}"
         params.max = Math.min(max ?: 10, 100)
         respond Threat.list(params), model:[threatCount: Threat.count()]
     }

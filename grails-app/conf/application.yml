@@ -61,9 +61,6 @@ grails:
         encoding: UTF-8
     plugin:
         springsecurity:
-#            digest:
-#                useCleartextPasswords: false
-#                useDigestAuth: true
             userLookup:
                 userDomainClassName: 'com.infiniteintelligence.wts.domain.security.User'
                 authorityJoinClassName: 'com.infiniteintelligence.wts.domain.security.UserRole'
