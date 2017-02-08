@@ -22,6 +22,14 @@ appender('STDOUT', ConsoleAppender) {
     }
 }
 
+logger 'org.springframework.security', DEBUG
+logger 'grails.plugin.springsecurity', TRACE
+logger 'grails.plugin.springsecurity.rest', TRACE
+// logger 'org.hibernate.SQL', DEBUG
+// logger 'org.hibernate.type.descriptor.sql.BasicBinder', TRACE
+
+logger 'com.infiniteintelligence.wts', DEBUG
+
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir != null) {
     appender("FULL_STACKTRACE", FileAppender) {
