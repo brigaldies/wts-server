@@ -1,0 +1,1 @@
+insert into PARAMETER (VERSION, NAME, VALUE, DESCRIPTION, DATE_CREATED, LAST_UPDATED, LAST_UPDATED_BY_USER_ID, LAST_UPDATED_COMMENT) (select 0, 'JOB_CRON_THREAT_SEARCH', 'off', 'Cron expression for the threat searching job.', sysdate, sysdate, (select id from users where username='system'), 'Parameter.sql' from dual);

@@ -61,6 +61,7 @@ def main() {
             // Meta data (e.g., code tables)
             // Listed by alphabetical order, unless dependencies between the scripts require a different order
             // (Please document any dependency)
+            // 'Parameter',
             'ThreatSeverityCode',
             'ThreatTypeCode'
     ]

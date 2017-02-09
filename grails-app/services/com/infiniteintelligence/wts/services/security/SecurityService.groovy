@@ -5,7 +5,9 @@ import com.infiniteintelligence.wts.domain.security.User
 import com.infiniteintelligence.wts.domain.security.UserRole
 import com.infiniteintelligence.wts.support.DaoSupport
 import grails.transaction.Transactional
+import groovy.util.logging.Slf4j
 
+@Slf4j
 @Transactional
 class SecurityService extends DaoSupport {
 
