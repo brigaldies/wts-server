@@ -33,6 +33,7 @@ String logFileName = "${applicationName}-${applicationVersion}"
 println "Using log file: ${logFileName}.log"
 
 appender("APPLICATION", RollingFileAppender) {
+    // TODO: Relocate the file to the JVM container's log directory.
     file = "${logFileName}.log"
     encoder(PatternLayoutEncoder) {
         Pattern = "%d %5p [%15.15t] %mdc %-40.40logger{39} : %m%n"
