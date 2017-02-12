@@ -1,12 +1,14 @@
 package com.infiniteintelligence.wts.jobs
 
-import com.infiniteintelligence.wts.services.search.solr.SolrService
+import com.infiniteintelligence.wts.domain.organization.Asset
+import com.infiniteintelligence.wts.domain.organization.Organization
+import com.infiniteintelligence.wts.services.threat.ThreatService
 import groovy.util.logging.Slf4j
 
 @Slf4j
 class ThreatSearchJob {
 
-    SolrService solrService
+    ThreatService threatService
 
     // No hibernate session bound. Database writes are executed via service calls when needed.
     def sessionRequired = false
@@ -22,11 +24,15 @@ class ThreatSearchJob {
     def description = 'Threat Search'
 
     static triggers = {
-      simple repeatInterval: 60000 // execute job once every 60 secs
+        simple startDelay: 10000, repeatInterval: 60000 // execute job once every 60 secs
     }
 
+    /**
+     * Threat job execution method
+     * @return
+     */
     def execute() {
         // execute job
-        solrService.search('solr', 'json')
+        threatService.scan()
     }
 }

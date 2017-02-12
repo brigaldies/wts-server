@@ -1,10 +1,12 @@
 package com.infiniteintelligence.wts.support
 
 import grails.validation.ValidationException
+import groovy.util.logging.Slf4j
 
 /**
  * In the spirit of DRY (Don't Repeat Yourself), this support class provides common DB I/O operations for domain classes.
  */
+@Slf4j
 abstract class DaoSupport {
 
     /**

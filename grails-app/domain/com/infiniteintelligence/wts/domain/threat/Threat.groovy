@@ -1,12 +1,15 @@
 package com.infiniteintelligence.wts.domain.threat
 
 import com.infiniteintelligence.wts.domain.BaseEntity
+import com.infiniteintelligence.wts.domain.organization.Asset
+import groovy.transform.ToString
 
+@ToString
 class Threat extends BaseEntity {
 
+    Asset asset
     ThreatTypeCode threatType // e.g., Hail
     ThreatSeverityCode threatSeverity // e.g., Warning, Alert
-    Date dateCreated // When the threat is identified or predicted
     Date dateBegin // When the threat starts
     Date dateEnd  // When the threat ends
 
