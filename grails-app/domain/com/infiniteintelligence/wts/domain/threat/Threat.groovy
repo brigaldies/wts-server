@@ -10,6 +10,7 @@ class Threat extends BaseEntity {
     Asset asset
     ThreatTypeCode threatType // e.g., Hail
     ThreatSeverityCode threatSeverity // e.g., Warning, Alert
+    Integer temperatureAlert
     Date dateBegin // When the threat starts
     Date dateEnd  // When the threat ends
 
@@ -19,5 +20,6 @@ class Threat extends BaseEntity {
     }
 
     static constraints = {
+        temperatureAlert nullable: true
     }
 }

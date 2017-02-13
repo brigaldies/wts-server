@@ -30,9 +30,9 @@ class ThreatService {
     void scan() {
         User systemUser = User.findByUsername('system')
         assert systemUser
-        Organization.list([order: 'name']).each { Organization organization ->
+        Organization.list([sort: 'name']).each { Organization organization ->
             log.info "Searching threats for organization ${organization.name}..."
-            Asset.findByOrganization(organization).each { Asset asset ->
+            Asset.findByOrganization(organization, [sort: 'id']).each { Asset asset ->
                 log.info "Searching threats for assert type ${asset.assetType} at location ${asset.address}..."
                 // Date and time filter
                 String queryDateAndTime = 'FCTTIME.epoch_dt:[' + new Date().format("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone('GMT')) + ' TO *]'
@@ -82,10 +82,11 @@ class ThreatService {
                                             asset: asset,
                                             threatType: threatTypeCode,
                                             threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT.name()),
+                                            temperatureAlert: temperatureAlert,
                                             dateBegin: dateAlertBegin,
                                             dateEnd: dateAlertEnd,
                                             lastUpdatedByUser: systemUser,
-                                            lastUpdatedComment: 'query'
+                                            lastUpdatedComment: query
                                     )
                             ) as Threat
                             assert threat
@@ -97,4 +98,17 @@ class ThreatService {
             } // Asset
         } // Organization
     } // scan()
+
+    @Transactional(readOnly = true)
+    List<Threat> list(def params) {
+        // TODO: Apply 'params' to the query
+        List<Threat> threats = Threat.list([sort: 'dateBegin', order: 'asc'])
+        log.debug "${threats.size()} threat(s) retrieved"
+        threats
+    }
+
+    @Transactional(readOnly = true)
+    Threat get(Long id) {
+        Threat.get(id)
+    }
 }

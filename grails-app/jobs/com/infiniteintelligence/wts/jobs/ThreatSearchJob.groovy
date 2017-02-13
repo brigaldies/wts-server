@@ -24,7 +24,8 @@ class ThreatSearchJob {
     def description = 'Threat Search'
 
     static triggers = {
-        simple startDelay: 10000, repeatInterval: 60000 // execute job once every 60 secs
+        // repeatCount: 1 for debugging
+        simple startDelay: 10000, repeatCount: 1, repeatInterval: 60 * 60 * 1000 // execute job every hour
     }
 
     /**

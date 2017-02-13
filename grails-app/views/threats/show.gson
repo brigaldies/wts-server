@@ -1,0 +1,26 @@
+import com.infiniteintelligence.wts.domain.threat.Threat
+
+model {
+    Threat threat
+}
+
+json {
+    threat {
+        organization threat.asset.organization.name
+        threatSeverity threat.threatSeverity.code
+        threatType threat.threatType.code
+        assetType threat.asset.assetType.code
+        assetAddress {
+            street1 threat.asset.address.street1
+            street1 threat.asset.address.street2
+            street1 threat.asset.address.city
+            street1 threat.asset.address.province
+            street1 threat.asset.address.state
+            street1 threat.asset.address.country
+            street1 threat.asset.address.latitute
+            street1 threat.asset.address.longitute
+        }
+        threatDateBegin threat.dateBegin
+        threatDateEnd threat.dateEnd
+    }
+}
