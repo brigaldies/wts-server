@@ -102,7 +102,7 @@ goto endScript
 
 :usage
 echo Error: Please use the command usage below:
-echo Usage: deploy-fdss version-to-deploy
+echo Usage: deploy-wts-server version-to-deploy
 goto endScript
 
 :endScript

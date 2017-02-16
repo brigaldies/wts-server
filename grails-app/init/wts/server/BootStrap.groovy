@@ -7,6 +7,8 @@ import com.infiniteintelligence.wts.domain.organization.Organization
 import com.infiniteintelligence.wts.domain.security.Role
 import com.infiniteintelligence.wts.domain.security.User
 import com.infiniteintelligence.wts.domain.security.UserRole
+import com.infiniteintelligence.wts.domain.threat.Threat
+import com.infiniteintelligence.wts.domain.threat.ThreatSeverityCode
 import com.infiniteintelligence.wts.domain.threat.ThreatTypeCode
 import com.infiniteintelligence.wts.services.crud.CrudService
 import com.infiniteintelligence.wts.services.security.SecurityService
@@ -227,7 +229,8 @@ class BootStrap {
                 name: 'ABC Inc.',
                 lastUpdatedByUser: systemUser,
                 lastUpdatedComment: createComment,
-        )) as Organization
+        ))
+        assert organization
 
         Address address = crudService.create(new Address(
                 street1: '1 Main Street',
@@ -239,6 +242,7 @@ class BootStrap {
                 lastUpdatedByUser: systemUser,
                 lastUpdatedComment: createComment,
         ))
+        assert address
 
         Asset asset = crudService.create(new Asset(
                 organization: organization,
@@ -249,13 +253,27 @@ class BootStrap {
                 lastUpdatedByUser: systemUser,
                 lastUpdatedComment: createComment,
         ))
+        assert asset
+
+        Threat threat = crudService.create(new Threat(
+                asset: asset,
+                threatType: ThreatTypeCode.get(ThreatTypeCode.eValue.TEMPERATURE_THRESHOLD_HIGH),
+                threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT),
+                temperatureAlert: 90,
+                dateBegin: new Date(),
+                dateEnd: new Date() + 1,
+                lastUpdatedByUser: systemUser,
+                lastUpdatedComment: createComment,
+        ))
+        assert threat
 
         // Company #2: DEF Inc.
         organization = crudService.create(new Organization(
                 name: 'DEF Inc.',
                 lastUpdatedByUser: systemUser,
                 lastUpdatedComment: createComment,
-        )) as Organization
+        ))
+        assert organization
 
         address = crudService.create(new Address(
                 street1: '1 Main Street',
@@ -267,6 +285,7 @@ class BootStrap {
                 lastUpdatedByUser: systemUser,
                 lastUpdatedComment: createComment,
         ))
+        assert address
 
         asset = crudService.create(new Asset(
                 organization: organization,
@@ -277,6 +296,17 @@ class BootStrap {
                 lastUpdatedByUser: systemUser,
                 lastUpdatedComment: createComment,
         ))
+        assert asset
 
+        threat = crudService.create(new Threat(
+                asset: asset,
+                threatType: ThreatTypeCode.get(ThreatTypeCode.eValue.STORM_FLOOD),
+                threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT),
+                dateBegin: new Date(),
+                dateEnd: new Date() + 1,
+                lastUpdatedByUser: systemUser,
+                lastUpdatedComment: createComment,
+        ))
+        assert threat
     }
 }
