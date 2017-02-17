@@ -52,7 +52,7 @@ logger 'grails.plugin.springsecurity', TRACE
 logger 'grails.plugin.springsecurity.rest', TRACE
 
 // Hibernate
-// logger 'org.hibernate.SQL', DEBUG
+logger 'org.hibernate.SQL', DEBUG
 // logger 'org.hibernate.type.descriptor.sql.BasicBinder', TRACE
 
 // Application

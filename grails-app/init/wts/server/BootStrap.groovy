@@ -36,7 +36,7 @@ class BootStrap {
         }
 
         // Create test data from external configuration file
-        createTestData()
+        // createTestData()
         // Test the creation of the test data
         List<Asset> assets = Asset.list()
         assert assets.size() > 0
@@ -202,13 +202,15 @@ class BootStrap {
                 log.info "eValue: ${codeEnum.getEnumConstants()}"
                 codeEnum.getEnumConstants().each { e ->
                     String codeValue = e.name()
-                    Object codeInstance = domainClass.newInstance([
-                            code       : codeValue,
-                            label      : codeValue,
-                            description: codeValue,
-                            enabled    : true
-                    ])
-                    crudService.create(codeInstance)
+                    if (!domainClass.get(codeValue)) {
+                        Object codeInstance = domainClass.newInstance([
+                                code       : codeValue,
+                                label      : codeValue,
+                                description: codeValue,
+                                enabled    : true
+                        ])
+                        crudService.create(codeInstance)
+                    }
                 }
             }
         }
@@ -216,97 +218,113 @@ class BootStrap {
     }
 
     /**
-     * Create an organization and asset as rudimentary test data.
+     * Create a few organizations and assets as rudimentary test data.
      */
     def createTestData() {
         User systemUser = User.findByUsername('system')
         assert systemUser
 
+        String propertyName = 'create.test.threats'
+        String propertyValue = System.getProperty(propertyName)
+        log.info "${propertyName}=${propertyValue}"
+        Boolean createTestThreats = Boolean.getBoolean(propertyName)
+        log.info "Create test threats: ${createTestThreats}"
+
         String createComment = 'Test data loaded by Bootstrap'
 
         // Company #1: ABC Inc.
-        Organization organization = crudService.create(new Organization(
-                name: 'ABC Inc.',
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert organization
+        String organizationName = 'ABC Inc.'
+        if (!Organization.findByName(organizationName)) {
+            Organization organization = crudService.create(new Organization(
+                    name: organizationName,
+                    lastUpdatedByUser: systemUser,
+                    lastUpdatedComment: createComment,
+            ))
+            assert organization
 
-        Address address = crudService.create(new Address(
-                street1: '1 Main Street',
-                city: 'Charlottesville',
-                state: 'VA',
-                country: 'USA',
-                latitute: 38.029306,
-                longitute: -78.476678,
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert address
+            Address address = crudService.create(new Address(
+                    street1: '1 Main Street',
+                    city: 'Charlottesville',
+                    state: 'VA',
+                    country: 'USA',
+                    latitute: 38.029306,
+                    longitute: -78.476678,
+                    lastUpdatedByUser: systemUser,
+                    lastUpdatedComment: createComment,
+            ))
+            assert address
 
-        Asset asset = crudService.create(new Asset(
-                organization: organization,
-                assetType: AssetTypeCode.get(AssetTypeCode.eValue.STORE.name()),
-                address: address,
-                temperatureThresholdLow: 30,
-                temperatureThresholdHigh: 70,
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert asset
+            Asset asset = crudService.create(new Asset(
+                    organization: organization,
+                    assetType: AssetTypeCode.get(AssetTypeCode.eValue.STORE.name()),
+                    address: address,
+                    temperatureThresholdLow: 30,
+                    temperatureThresholdHigh: 70,
+                    lastUpdatedByUser: systemUser,
+                    lastUpdatedComment: createComment,
+            ))
+            assert asset
 
-        Threat threat = crudService.create(new Threat(
-                asset: asset,
-                threatType: ThreatTypeCode.get(ThreatTypeCode.eValue.TEMPERATURE_THRESHOLD_HIGH),
-                threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT),
-                temperatureAlert: 90,
-                dateBegin: new Date(),
-                dateEnd: new Date() + 1,
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert threat
+            if (createTestThreats) {
+                Threat threat = crudService.create(new Threat(
+                        asset: asset,
+                        threatType: ThreatTypeCode.get(ThreatTypeCode.eValue.TEMPERATURE_THRESHOLD_HIGH),
+                        threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT),
+                        temperatureAlert: 90,
+                        dateBegin: new Date(),
+                        dateEnd: new Date() + 1,
+                        lastUpdatedByUser: systemUser,
+                        lastUpdatedComment: createComment,
+                ))
+                assert threat
+            }
+        }
 
         // Company #2: DEF Inc.
-        organization = crudService.create(new Organization(
-                name: 'DEF Inc.',
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert organization
+        organizationName = 'DEF Inc.'
+        if (!Organization.findByName(organizationName)) {
+            Organization organization = crudService.create(new Organization(
+                    name: 'DEF Inc.',
+                    lastUpdatedByUser: systemUser,
+                    lastUpdatedComment: createComment,
+            ))
+            assert organization
 
-        address = crudService.create(new Address(
-                street1: '1 Main Street',
-                city: 'Richmond',
-                state: 'VA',
-                country: 'USA',
-                latitute: 37.540725,
-                longitute: -77.436048,
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert address
+            Address address = crudService.create(new Address(
+                    street1: '1 Main Street',
+                    city: 'Richmond',
+                    state: 'VA',
+                    country: 'USA',
+                    latitute: 37.540725,
+                    longitute: -77.436048,
+                    lastUpdatedByUser: systemUser,
+                    lastUpdatedComment: createComment,
+            ))
+            assert address
 
-        asset = crudService.create(new Asset(
-                organization: organization,
-                assetType: AssetTypeCode.get(AssetTypeCode.eValue.STORE.name()),
-                address: address,
-                temperatureThresholdLow: 40,
-                temperatureThresholdHigh: 60,
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert asset
+            Asset asset = crudService.create(new Asset(
+                    organization: organization,
+                    assetType: AssetTypeCode.get(AssetTypeCode.eValue.STORE.name()),
+                    address: address,
+                    temperatureThresholdLow: 40,
+                    temperatureThresholdHigh: 60,
+                    lastUpdatedByUser: systemUser,
+                    lastUpdatedComment: createComment,
+            ))
+            assert asset
 
-        threat = crudService.create(new Threat(
-                asset: asset,
-                threatType: ThreatTypeCode.get(ThreatTypeCode.eValue.STORM_FLOOD),
-                threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT),
-                dateBegin: new Date(),
-                dateEnd: new Date() + 1,
-                lastUpdatedByUser: systemUser,
-                lastUpdatedComment: createComment,
-        ))
-        assert threat
+            if (createTestThreats) {
+                Threat threat = crudService.create(new Threat(
+                        asset: asset,
+                        threatType: ThreatTypeCode.get(ThreatTypeCode.eValue.STORM_FLOOD),
+                        threatSeverity: ThreatSeverityCode.get(ThreatSeverityCode.eValue.ALERT),
+                        dateBegin: new Date(),
+                        dateEnd: new Date() + 1,
+                        lastUpdatedByUser: systemUser,
+                        lastUpdatedComment: createComment,
+                ))
+                assert threat
+            }
+        }
     }
 }

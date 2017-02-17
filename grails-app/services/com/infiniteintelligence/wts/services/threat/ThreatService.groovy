@@ -26,7 +26,7 @@ class ThreatService {
     /**
      * Threats scan for all organizations and their assets
      */
-    @Transactional(readOnly = true)
+    @Transactional
     void scan() {
         User systemUser = User.findByUsername('system')
         assert systemUser
