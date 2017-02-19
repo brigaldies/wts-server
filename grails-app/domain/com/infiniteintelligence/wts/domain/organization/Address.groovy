@@ -1,8 +1,10 @@
 package com.infiniteintelligence.wts.domain.organization
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 @ToString
+@EqualsAndHashCode(includes = ['id'])
 class Address {
 
     String street1

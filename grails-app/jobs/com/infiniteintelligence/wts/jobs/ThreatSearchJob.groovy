@@ -1,7 +1,5 @@
 package com.infiniteintelligence.wts.jobs
 
-import com.infiniteintelligence.wts.domain.organization.Asset
-import com.infiniteintelligence.wts.domain.organization.Organization
 import com.infiniteintelligence.wts.services.threat.ThreatService
 import groovy.util.logging.Slf4j
 
@@ -24,8 +22,8 @@ class ThreatSearchJob {
     def description = 'Threat Search'
 
     static triggers = {
-        // repeatCount: 1 for debugging
-        simple startDelay: 10000, repeatCount: 1, repeatInterval: 60 * 60 * 1000 // execute job every hour
+        simple startDelay: 60 * 1000 /* 1 min */, repeatCount: 1 /* Run once only (For demo only) */, repeatInterval: 60 * 60 * 1000
+        /* Run every hour */
     }
 
     /**
@@ -33,7 +31,7 @@ class ThreatSearchJob {
      * @return
      */
     def execute() {
-        // execute job
+        // Search for threats...
         threatService.scan()
     }
 }

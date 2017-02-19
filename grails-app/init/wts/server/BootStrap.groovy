@@ -35,8 +35,14 @@ class BootStrap {
             log.info "${threatTypeCode}"
         }
 
-        // Create test data from external configuration file
-        // createTestData()
+        // Create test data
+        String propertyName = 'create.test.threats'
+        String propertyValue = System.getProperty(propertyName)
+        log.info "${propertyName}=${propertyValue}"
+        Boolean createTestThreats = Boolean.getBoolean(propertyName)
+        log.info "Create test threats: ${createTestThreats}"
+
+        createTestData(createTestThreats)
         // Test the creation of the test data
         List<Asset> assets = Asset.list()
         assert assets.size() > 0
@@ -44,6 +50,11 @@ class BootStrap {
             log.info "${asset}"
         }
 
+        if (!createTestThreats) {
+            // Delete all threats. They will be re-created by searching for them in Fusion.
+            log.info "Delete all threats..."
+            crudService.bulkDeleteAll(Threat.class)
+        }
     }
     def destroy = {
     }
@@ -220,15 +231,9 @@ class BootStrap {
     /**
      * Create a few organizations and assets as rudimentary test data.
      */
-    def createTestData() {
+    def createTestData(boolean createTestThreats) {
         User systemUser = User.findByUsername('system')
         assert systemUser
-
-        String propertyName = 'create.test.threats'
-        String propertyValue = System.getProperty(propertyName)
-        log.info "${propertyName}=${propertyValue}"
-        Boolean createTestThreats = Boolean.getBoolean(propertyName)
-        log.info "Create test threats: ${createTestThreats}"
 
         String createComment = 'Test data loaded by Bootstrap'
 

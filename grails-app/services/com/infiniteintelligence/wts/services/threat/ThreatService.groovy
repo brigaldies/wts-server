@@ -1,5 +1,6 @@
 package com.infiniteintelligence.wts.services.threat
 
+import com.infiniteintelligence.wts.domain.organization.Address
 import com.infiniteintelligence.wts.domain.organization.Asset
 import com.infiniteintelligence.wts.domain.organization.Organization
 import com.infiniteintelligence.wts.domain.security.User
@@ -100,12 +101,52 @@ class ThreatService {
     } // scan()
 
     @Transactional(readOnly = true)
-    List<Threat> list(def params) {
-        // TODO: Apply 'params' to the query
-        List<Threat> threats = Threat.list([sort: 'dateBegin', order: 'asc'])
+    List<Threat> list(Map params) {
+        List<Threat> threats = Threat.withCriteria {
+            if (params.forecast) {
+                Date dateFrom = new Date()
+                Date dateTo
+                use(TimeCategory) {
+                    dateTo = dateFrom + (params.forecast as Integer).days
+                }
+                log.info "dateFrom=${dateFrom}, dateTo=${dateTo}"
+                between('dateBegin', dateFrom, dateTo)
+            }
+            order('dateBegin', 'asc')
+        } as Threat[]
+        // List<Threat> threats = Threat.list([sort: 'dateBegin', order: 'asc'])
         log.debug "${threats.size()} threat(s) retrieved"
         threats
     }
+
+    /**
+     * Returns a map of threats information
+     * <city name>: Array of threats
+     * @param params
+     * @return
+     */
+    @Transactional(readOnly = true)
+    Map<String, List<Threat>> getThreatsByLocation(Map params) {
+        List<Address> locations = Address.executeQuery('''
+select distinct addr from Address addr, Asset a, Threat t 
+where addr = a.address and a = t.asset 
+order by addr.city
+''')
+        log.info "Retrieved ${locations.size()} distinct locations: ${locations*.city}"
+        Map<String, List<Threat>> threatsByLocation = new HashMap<String, List<Threat>>()
+        locations.each { Address address ->
+            List<Threat> threats = Threat.executeQuery('''
+select t from Threat t, Asset a, Address addr
+where t.asset = a and a.address = addr and addr.city = :city
+order by t.dateBegin
+''', [city: address.city])
+            threatsByLocation."${address.city}" = threats
+        }
+
+        // Return the map of threats by location
+        threatsByLocation
+    }
+
 
     @Transactional(readOnly = true)
     Threat get(Long id) {

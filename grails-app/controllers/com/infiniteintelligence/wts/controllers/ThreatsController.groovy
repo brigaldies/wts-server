@@ -16,7 +16,13 @@ class ThreatsController {
     @Secured('ROLE_USER')
     Object index() {
         log.debug "ThreatsController.index(), params=${params}"
-        [threats: threatService.list(params)]
+//        if (params.bylocation) {
+//            [threatsByLocation: threatService.getThreatsByLocation()]
+//        } else {
+//            [threats: threatService.list(params)]
+//        }
+
+        [threats: threatService.list(params), threatsByLocation: threatService.getThreatsByLocation()]
     }
 
     @Secured('ROLE_USER')
