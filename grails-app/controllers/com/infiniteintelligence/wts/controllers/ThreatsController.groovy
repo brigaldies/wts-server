@@ -22,7 +22,7 @@ class ThreatsController {
 //            [threats: threatService.list(params)]
 //        }
 
-        [threats: threatService.list(params), threatsByLocation: threatService.getThreatsByLocation()]
+        [threats: threatService.list(params), threatsByLocation: threatService.getThreatsByLocation(params)]
     }
 
     @Secured('ROLE_USER')

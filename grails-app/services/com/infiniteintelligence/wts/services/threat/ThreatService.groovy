@@ -127,19 +127,33 @@ class ThreatService {
      */
     @Transactional(readOnly = true)
     Map<String, List<Threat>> getThreatsByLocation(Map params) {
-        List<Address> locations = Address.executeQuery('''
+        Date dateFrom = null
+        Date dateTo = null
+        String whereClause = ''
+        if (params?.forecast) {
+            dateFrom = new Date()
+            dateTo
+            use(TimeCategory) {
+                dateTo = dateFrom + (params.forecast as Integer).days
+            }
+            log.info "dateFrom=${dateFrom}, dateTo=${dateTo}"
+            whereClause = "and t.dateBegin between :dateFrom and :dateTo"
+        }
+        List<Address> locations = Address.executeQuery("""
 select distinct addr from Address addr, Asset a, Threat t 
 where addr = a.address and a = t.asset 
-order by addr.city
-''')
+${whereClause}
+order by addr.city asc
+""", (dateTo && dateFrom) ? [dateFrom: dateFrom, dateTo: dateTo] : [])
         log.info "Retrieved ${locations.size()} distinct locations: ${locations*.city}"
         Map<String, List<Threat>> threatsByLocation = new HashMap<String, List<Threat>>()
         locations.each { Address address ->
-            List<Threat> threats = Threat.executeQuery('''
+            List<Threat> threats = Threat.executeQuery("""
 select t from Threat t, Asset a, Address addr
 where t.asset = a and a.address = addr and addr.city = :city
-order by t.dateBegin
-''', [city: address.city])
+${whereClause}
+order by t.dateBegin asc
+""", (dateTo && dateFrom) ? [city: address.city, dateFrom: dateFrom, dateTo: dateTo] : [city: address.city])
             threatsByLocation."${address.city}" = threats
         }
 
