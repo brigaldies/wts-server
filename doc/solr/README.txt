@@ -14,3 +14,6 @@ REST API search, using the "gettingstarted" collection from the Quick Start:
 http://localhost:8983/solr/gettingstarted/select?indent=on&q=*:*&wt=json
 
 3) To stop Solr: bin\solr stop -all
+
+Notes:
+- BR, 7/3/2017: Fusion starts Solr, hence Solr should NOT be started individually.
